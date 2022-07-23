@@ -1,0 +1,7 @@
+html, body {
+  font-family: 'League Spartan', sans-serif;
+}
+
+[v-cloak] {
+  display: none;
+}
