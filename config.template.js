@@ -4,7 +4,7 @@ export default {
   APP_NAME: 'Crypto Dashboard',
 
   // coin ids can be retreived here https://api.coingecko.com/api/v3/coins/list
-  // delete localStore after updating list for instant update
+  // delete localStorage after updating list for instant update
   COINS: [
     'bitcoin',
     'ethereum',
