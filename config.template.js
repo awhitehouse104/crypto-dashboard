@@ -19,6 +19,9 @@ export default {
   
   COINS_KEY: 'coins',
 
-  // update this to change cache duration
-  CACHE_VALID_FOR: 60000 * 15
+  // update to change cache duration
+  FEAR_AND_GREED_INDEX_CACHE_VALID_FOR: 60000 * 60,
+
+  // update to change cache duration
+  COINS_CACHE_VALID_FOR: 60000 * 15
 };

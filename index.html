@@ -39,6 +39,7 @@
       <!-- content -->
       <div class="container">
         <div class="row">
+          <!-- render coin price info -->
           <div class="col" v-for="coin in coins">
             <div class="card">
               <div class="card-body">
@@ -56,6 +57,17 @@
           </div>
         </div>
       </div>
+
+      <!-- footer -->
+      <nav class="navbar fixed-bottom bg-light">
+        <div class="container-fluid">
+          <span>Data provided by <a href="https://alternative.me/crypto/api/" target="_blank">alternative.me</a> and <a href="https://www.coingecko.com/api" target="_blank">coingecko</a>.</span>
+          <span>
+            <span class="me-2">Price data refresh in {{ cacheTimer }}</span>
+            <button class="btn btn-sm btn-secondary" @click="refreshCoins">Force Refresh</button>
+          </span>
+        </div>
+      </nav>
     </main>
 
     <script src="https://unpkg.com/vue@3"></script>

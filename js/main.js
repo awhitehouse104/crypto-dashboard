@@ -1,4 +1,5 @@
-import Util from './util.js';
+import Data from './data.js';
+import Cache from './cache.js';
 import Config from '../config.js';
 
 const { createApp } = Vue;
@@ -8,72 +9,42 @@ createApp({
   data() {
     return {
       header: Config.APP_NAME,
-      fearAndGreedIndex: '',
-      coins: []
-    }
+      fearAndGreedIndex: null,
+      coins: [],
+      cacheTimer: Cache.getCacheTimeRemainingInSeconds(
+        Config.COINS_TIMESTAMP_KEY,
+        Config.COINS_CACHE_VALID_FOR)
+    };
   },
 
   async created() {
-    this.fearAndGreedIndex =  await getFearAndGreedIndex();
-    this.coins = await getCoins();
+    this.startCacheTimer();
+
+    this.fearAndGreedIndex =  await Data.fetchFearAndGreedIndex();
+    this.coins = await Data.fetchCoins();
     
     console.info('Fear and Greed Index:', this.fearAndGreedIndex);
     console.info('Coins:', this.coins);
+  },
+
+  methods: {
+
+    async refreshCoins() {
+      this.coins = await Data.fetchCoins(true);
+    },
+
+    startCacheTimer() {
+      setInterval(async () => {
+        this.cacheTimer = Cache.getCacheTimeRemainingInSeconds(
+          Config.COINS_TIMESTAMP_KEY,
+          Config.COINS_CACHE_VALID_FOR);
+
+        if (this.cacheTimer === 0) {
+          this.coins = await Data.fetchCoins(true);
+        }
+      }, 1000);
+    }
+
   }
-  
+
 }).mount('#app');
-
-async function getFearAndGreedIndex() {
-  const fearAndGreedIndexCache = Util.getFearAndGreedIndexFromCache();
-
-  if (!Util.shouldFetchFearAndGreedIndex() && fearAndGreedIndexCache) {
-    console.info('Fetched Fear and Greed Index from cache')
-    return fearAndGreedIndexCache;
-  }
-
-  console.info('Fetching Fear and Greed Index from api.alternative.me...');
-
-  // api documentation https://alternative.me/crypto/fear-and-greed-index/
-  const fearAndGreedResponse = await fetch('https://api.alternative.me/fng/');
-  const fearAndGreedData = await fearAndGreedResponse.json();
-  const fearAndGreedIndex = fearAndGreedData.data[0].value;
-
-  Util.updateFearAndGreedIndexCache(fearAndGreedIndex);
-
-  console.info('Fetched Fear and Greed Index from api.alternative.me');
-  return fearAndGreedIndex;
-};
-
-async function getCoins() {
-  const coinsCache = Util.getCoinsFromCache();
-
-  if (!Util.shouldFetchCoins() && coinsCache) {
-    console.info('Fetched Coins from cache');
-    return coinsCache;
-  }
-  
-  const coins = await Promise.all(Config.COINS.map(async coin => getCoin(coin)));
-
-  Util.updateCoinsCache(coins);
-
-  return coins;
-};
-
-async function getCoin(coinId) {
-  console.info(`Fetching ${coinId} from api.coingecko.com...`)
-
-  // api documentation https://www.coingecko.com/en/api/documentation
-  const response = await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}`);
-  const data = await response.json();
-
-  const coin = {
-    name: data.name,
-    symbol: data.symbol.toUpperCase(),
-    price: Util.formatCurrency(data.market_data.current_price.usd),
-    priceChangeDailyPercent: Util.formatPercentage(data.market_data.price_change_percentage_24h)
-  };
-
-  console.info(`Fetched ${coinId} from api.coingecko.com`)
-
-  return coin;
-}
