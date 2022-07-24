@@ -9,8 +9,8 @@ Copy `config.template.js` contents to untracked `config.js` in same directory. M
 Run with local server of your choice. Here's a simple one:
 
 ```
-npm install -g live-server
+npm -g install static-server
 
 // from root directory
-live-server
+static-server
 ```
