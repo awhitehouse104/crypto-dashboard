@@ -1,3 +1,4 @@
+// copy to untracked config.js file
 export default {
 
   APP_NAME: 'Crypto Dashboard',
@@ -24,4 +25,5 @@ export default {
 
   // update to change cache duration
   COINS_CACHE_VALID_FOR: 60000 * 15
+  
 };
