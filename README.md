@@ -8,9 +8,14 @@ Copy `config.template.js` contents to untracked `config.js` in same directory. M
 
 Run with local server of your choice. Here's a simple one:
 
+Install globally
+
 ```
 npm -g install static-server
+```
 
-// from root directory
+Run from root directory
+
+```
 static-server
 ```
