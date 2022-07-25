@@ -22,12 +22,14 @@ createApp({
   },
 
   async created() {
-    this.startCacheTimer();
+    // if list has been modified since last visit we need to force update price and historical data
+    const enabledCoinsModified = Cache.enabledCoinsModified();
 
     this.fearAndGreedIndex =  await Data.fetchFearAndGreedIndex();
-    this.coins = await Data.fetchCoins();
-    this.historicalData = await Data.fetchHistoricalData();
+    this.coins = await Data.fetchCoins(enabledCoinsModified);
+    this.historicalData = await Data.fetchHistoricalData(enabledCoinsModified);
 
+    this.startCacheTimer();
     this.initializeHistoricalDataChart();
     
     console.info('Fear and Greed Index:', this.fearAndGreedIndex);

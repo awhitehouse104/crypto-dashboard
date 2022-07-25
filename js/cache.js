@@ -1,3 +1,5 @@
+import Config from '../config.js';
+
 export default {
 
   getFromCache(key, asJson = false) {
@@ -27,6 +29,22 @@ export default {
     const timePassed = Date.now() - timestamp;
 
     return Math.max(Math.round((cacheValidFor - timePassed) * 0.001), 0);
+  },
+
+  enabledCoinsModified() {
+    const cached = localStorage.getItem(Config.COINS_ENABLED_KEY);
+    if (!cached) {
+      localStorage.setItem(Config.COINS_ENABLED_KEY, JSON.stringify(Config.COINS));
+      return true;
+    }
+
+    // check if list has been modified since last visit then update stored value
+    const modified = cached !== JSON.stringify(Config.COINS);
+    if (modified) {
+      localStorage.setItem(Config.COINS_ENABLED_KEY, JSON.stringify(Config.COINS));
+    }
+    
+    return modified;
   }
 
 };

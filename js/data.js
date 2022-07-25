@@ -78,13 +78,13 @@ export default {
     return coin;
   },
 
-  async fetchHistoricalData() {
+  async fetchHistoricalData(force = false) {
     const historicalDataCache = Cache.getFromCache(Config.HISTORICAL_DATA.KEY, true);
     const shouldFetch = Cache.shouldFetch(
       Config.HISTORICAL_DATA.TIMESTAMP_KEY,
       Config.HISTORICAL_DATA.CACHE_VALID_FOR);
   
-    if (!shouldFetch && historicalDataCache) {
+    if (!force && !shouldFetch && historicalDataCache) {
       console.info('Fetched Historical Data from cache');
       return historicalDataCache;
     }

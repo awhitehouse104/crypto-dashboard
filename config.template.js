@@ -17,6 +17,9 @@ export default {
     }
   ],
 
+  // to detect when the coins list above has changed. you shouldn't need to update this
+  COINS_ENABLED_KEY: 'coinsEnabled',
+
   // for localStorage cache
   FEAR_AND_GREED_INDEX: {
     KEY: 'fearAndGreedIndex',
