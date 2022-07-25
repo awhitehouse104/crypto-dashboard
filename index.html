@@ -63,6 +63,7 @@
               <input type="checkbox" :id="coin.id" class="me-2" :value="coin.id" v-model="selectedForHistoricalData" @change="initializeHistoricalDataChart" :disabled="disableUpdateChart">
               <label :for="coin.id">{{ coin.name }}</label>
             </span>
+            <button class="btn btn-outline-secondary btn-sm float-end" @click="clearHistoricalDataSelection">Clear Selected</button>
           </div>
         </div>
         <div class="row">

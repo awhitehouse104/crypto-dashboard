@@ -80,6 +80,11 @@ createApp({
       });
     },
 
+    clearHistoricalDataSelection() {
+      this.selectedForHistoricalData = [];
+      this.initializeHistoricalDataChart();
+    }
+
   }
 
 }).mount('#app');

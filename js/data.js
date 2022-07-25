@@ -116,11 +116,17 @@ export default {
     const response = await fetch(HISTORICAL_DATA_URL(coinId));
     const data = await response.json();
 
+    const priceMap = data.prices.reduce((prev, curr) => {
+      prev.dates.push(Util.timestampToDateString(curr[0]));
+      prev.prices.push(curr[1]);
+      return prev;
+    }, { dates: [], prices: [] });
+
     const historicalDataForCoin = {
-      dates: data.prices.map(p => Util.timestampToDateString(p[0])),
+      dates: priceMap.dates,
       data: {
         label: coinId,
-        data: data.prices.map(p => p[1])
+        data: priceMap.prices
       }
     };
 
