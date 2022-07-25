@@ -58,22 +58,22 @@ export default {
     return coins;
   },
 
-  async fetchCoin(coinId) {
-    console.info(`Fetching ${coinId} from ${COIN_API_URL(coinId)}...`);
+  async fetchCoin(id) {
+    console.info(`Fetching ${id} from ${COIN_API_URL(id)}...`);
   
     // api documentation https://www.coingecko.com/en/api/documentation
-    const response = await fetch(COIN_API_URL(coinId));
+    const response = await fetch(COIN_API_URL(id));
     const data = await response.json();
   
     const coin = {
-      id: coinId,
+      id,
       name: data.name,
       symbol: data.symbol.toUpperCase(),
       price: Util.formatCurrency(data.market_data.current_price.usd),
       priceChangeDailyPercent: Util.formatPercentage(data.market_data.price_change_percentage_24h)
     };
   
-    console.info(`Fetched ${coinId} from ${COIN_API_URL(coinId)}`);
+    console.info(`Fetched ${id} from ${COIN_API_URL(id)}`);
   
     return coin;
   },
@@ -109,11 +109,11 @@ export default {
     return historicalData;
   },
 
-  async fetchHistoricalDataForCoin(coinId) {
-    console.info(`Fetching Historical Data for ${coinId} from ${COIN_API_URL(coinId)}...`);
+  async fetchHistoricalDataForCoin(id) {
+    console.info(`Fetching Historical Data for ${id} from ${HISTORICAL_DATA_URL(id)}...`);
 
     // api documentation https://www.coingecko.com/en/api/documentation
-    const response = await fetch(HISTORICAL_DATA_URL(coinId));
+    const response = await fetch(HISTORICAL_DATA_URL(id));
     const data = await response.json();
 
     const priceMap = data.prices.reduce((prev, curr) => {
@@ -125,12 +125,12 @@ export default {
     const historicalDataForCoin = {
       dates: priceMap.dates,
       data: {
-        label: coinId,
+        label: id,
         data: priceMap.prices
       }
     };
 
-    console.info(`Fetched Historical Data for ${coinId} from ${COIN_API_URL(coinId)}`);
+    console.info(`Fetched Historical Data for ${id} from ${HISTORICAL_DATA_URL(id)}`);
 
     return historicalDataForCoin;
   }

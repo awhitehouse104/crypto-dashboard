@@ -20,6 +20,6 @@ export default {
 
   timestampToDateString(timestamp) {
     return new Date(timestamp).toLocaleDateString()
-  },
+  }
 
 };

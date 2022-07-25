@@ -2,7 +2,6 @@ export default {
 
   getFromCache(key, asJson = false) {
     const item = localStorage.getItem(key);
-
     return asJson ? JSON.parse(item) : item;
   },
 
