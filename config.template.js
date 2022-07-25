@@ -4,26 +4,36 @@ export default {
   APP_NAME: 'Crypto Dashboard',
 
   // coin ids can be retreived here https://api.coingecko.com/api/v3/coins/list
-  // delete localStorage after updating list for instant update
-  COINS: [
-    'bitcoin',
-    'ethereum',
-    'monero'
+  // clear localStorage after updating list to force update
+  COINS: [{
+      ID: 'bitcoin',
+      CHART_COLOR: '#f2a900'
+    }, {
+      ID: 'ethereum',
+      CHART_COLOR: '#48cbd9'
+    }, {
+      ID: 'monero',
+      CHART_COLOR: '#4c4c4c'
+    }
   ],
 
-  // localStorage cache keys
-  FEAR_AND_GREED_INDEX_TIMESTAMP_KEY: 'fearAndGreedIndexLastFetched',
+  // for localStorage cache
+  FEAR_AND_GREED_INDEX: {
+    KEY: 'fearAndGreedIndex',
+    TIMESTAMP_KEY: 'fearAndGreedIndexLastFetched',
+    CACHE_VALID_FOR: 60000 * 60
+  },
 
-  COINS_TIMESTAMP_KEY: 'coinsLastFetched',
+  COIN_DATA: {
+    KEY: 'coins',
+    TIMESTAMP_KEY: 'coinsLastFetched',
+    CACHE_VALID_FOR: 60000 * 15
+  },
 
-  FEAR_AND_GREED_INDEX_KEY: 'fearAndGreedIndex',
-  
-  COINS_KEY: 'coins',
+  HISTORICAL_DATA: {
+    KEY: 'historicalData',
+    TIMESTAMP_KEY: 'historicalDataLastFetched',
+    CACHE_VALID_FOR: 60000 * 60
+  }
 
-  // update to change cache duration
-  FEAR_AND_GREED_INDEX_CACHE_VALID_FOR: 60000 * 60,
-
-  // update to change cache duration
-  COINS_CACHE_VALID_FOR: 60000 * 15
-  
 };

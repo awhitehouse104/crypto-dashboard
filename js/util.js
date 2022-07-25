@@ -18,4 +18,8 @@ export default {
     return formatter.format(value);
   },
 
+  timestampToDateString(timestamp) {
+    return new Date(timestamp).toLocaleDateString()
+  },
+
 };

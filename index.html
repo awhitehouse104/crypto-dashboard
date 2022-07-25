@@ -38,8 +38,8 @@
 
       <!-- content -->
       <div class="container">
-        <div class="row">
-          <!-- render coin price info -->
+        <!-- coin price info -->
+        <div class="row mb-4">
           <div class="col" v-for="coin in coins">
             <div class="card">
               <div class="card-body">
@@ -54,6 +54,20 @@
                 </h5>
               </div>
             </div>
+          </div>
+        </div>
+        <!-- historical data -->
+        <div class="row">
+          <div class="col">
+            <span class="me-4" v-for="coin in coins">
+              <input type="checkbox" :id="coin.id" class="me-2" :value="coin.id" v-model="selectedForHistoricalData" @change="initializeHistoricalDataChart" :disabled="disableUpdateChart">
+              <label :for="coin.id">{{ coin.name }}</label>
+            </span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <canvas id="historicalDataChart"></canvas>
           </div>
         </div>
       </div>
@@ -71,6 +85,7 @@
     </main>
 
     <script src="https://unpkg.com/vue@3"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.1/chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
     <script type="module" src="./js/main.js"></script>
   </body>
