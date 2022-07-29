@@ -45,6 +45,10 @@ export default {
     }
     
     return modified;
+  },
+
+  refreshEnabledCoinsCache() {
+    localStorage.setItem(Config.COINS_ENABLED_KEY, JSON.stringify(Config.COINS));
   }
 
 };

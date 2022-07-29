@@ -37,6 +37,12 @@ export default {
     KEY: 'historicalData',
     TIMESTAMP_KEY: 'historicalDataLastFetched',
     CACHE_VALID_FOR: 60000 * 60
+  },
+
+  TRENDING_DATA: {
+    KEY: 'trendingData',
+    TIMESTAMP_KEY: 'trendingDataLastFetched',
+    CACHE_VALID_FOR: 60000 * 30
   }
 
 };

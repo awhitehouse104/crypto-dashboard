@@ -3,8 +3,9 @@ import Cache from './cache.js';
 import Config from '../config.js';
 
 const FEAR_AND_GREED_API_URL = 'https://api.alternative.me/fng/';
-const COIN_API_URL = id => `https://api.coingecko.com/api/v3/coins/${id}`;
+const COIN_API_URL = id => `https://api.coingecko.com/api/v3/coins/${id}?localization=false&tickers=false&community_data=false&developer_data=false`;
 const HISTORICAL_DATA_URL = id => `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=30&interval=daily`;
+const TRENDING_URL = 'https://api.coingecko.com/api/v3/search/trending';
 
 export default {
 
@@ -22,9 +23,9 @@ export default {
     console.info(`Fetching Fear and Greed Index from ${FEAR_AND_GREED_API_URL}...`);
   
     // api documentation https://alternative.me/crypto/fear-and-greed-index/
-    const fearAndGreedResponse = await fetch(FEAR_AND_GREED_API_URL);
-    const fearAndGreedData = await fearAndGreedResponse.json();
-    const fearAndGreedIndex = fearAndGreedData.data[0].value;
+    const response = await fetch(FEAR_AND_GREED_API_URL);
+    const data = await response.json();
+    const fearAndGreedIndex = data.data[0].value;
   
     Cache.updateCache(
       Config.FEAR_AND_GREED_INDEX.KEY,
@@ -64,12 +65,16 @@ export default {
     // api documentation https://www.coingecko.com/en/api/documentation
     const response = await fetch(COIN_API_URL(id));
     const data = await response.json();
+
+    const priceHasDecimal = data.market_data.current_price.usd.toString().includes('.');
   
     const coin = {
       id,
       name: data.name,
       symbol: data.symbol.toUpperCase(),
-      price: Util.formatCurrency(data.market_data.current_price.usd),
+      image: data.image.small,
+      url: data.links.homepage[0],
+      price: Util.formatCurrency(data.market_data.current_price.usd, priceHasDecimal ? 2 : 0),
       priceChangeDailyPercent: Util.formatPercentage(data.market_data.price_change_percentage_24h)
     };
   
@@ -133,6 +138,36 @@ export default {
     console.info(`Fetched Historical Data for ${id} from ${HISTORICAL_DATA_URL(id)}`);
 
     return historicalDataForCoin;
+  },
+
+  async fetchTrending() {
+    const trendingCache = Cache.getFromCache(Config.TRENDING_DATA.KEY, true);
+    const shouldFetch = Cache.shouldFetch(
+      Config.TRENDING_DATA.TIMESTAMP_KEY,
+      Config.TRENDING_DATA.CACHE_VALID_FOR);
+
+    if (!shouldFetch && trendingCache) {
+      console.info('Fetched Trending Data from cache');
+      return trendingCache;
+    }
+
+    console.info(`Fetching Trending Data from ${TRENDING_URL}...`);
+
+    // api documentation https://www.coingecko.com/en/api/documentation
+    const response = await fetch(TRENDING_URL);
+    const data = await response.json();
+
+    const trendingData = await Promise.all(data.coins.map(async c => this.fetchCoin(c.item.id)));
+
+    Cache.updateCache(
+      Config.TRENDING_DATA.KEY,
+      Config.TRENDING_DATA.TIMESTAMP_KEY,
+      trendingData,
+      true
+    );
+
+    console.info(`Fetched Trending Data from ${TRENDING_URL}`);
+    return trendingData;
   }
 
 };

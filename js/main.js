@@ -12,8 +12,10 @@ createApp({
       fearAndGreedIndex: null,
       coins: [],
       historicalData: null,
+      trendingData: [],
       selectedForHistoricalData: [Config.COINS[0].ID],
       historicalDataChart: null,
+      historicalDataMultiselect: false,
       disableUpdateChart: false,
       cacheTimer: Cache.getCacheTimeRemainingInSeconds(
         Config.COIN_DATA.TIMESTAMP_KEY,
@@ -28,6 +30,7 @@ createApp({
     this.fearAndGreedIndex =  await Data.fetchFearAndGreedIndex();
     this.coins = await Data.fetchCoins(enabledCoinsModified);
     this.historicalData = await Data.fetchHistoricalData(enabledCoinsModified);
+    this.trendingData = await Data.fetchTrending();
 
     this.startCacheTimer();
     this.initializeHistoricalDataChart();
@@ -35,6 +38,7 @@ createApp({
     console.info('Fear and Greed Index:', this.fearAndGreedIndex);
     console.info('Coin Data:', this.coins);
     console.info('Historical Data:', this.historicalData);
+    console.info('Trending Data:', this.trendingData);
   },
 
   methods: {
@@ -55,13 +59,18 @@ createApp({
       }, 1000);
     },
 
-    initializeHistoricalDataChart() {
+    initializeHistoricalDataChart(event) {
       // updating too quickly causes chartjs to fail
       this.disableUpdateChart = true;
       setTimeout(() => this.disableUpdateChart = false, 1000);
 
       if (this.historicalDataChart) {
         this.historicalDataChart.destroy();
+      }
+
+      // event only present when selection made from ui. if multiselect disabled, filter to only current selection
+      if (event && !this.historicalDataMultiselect) {
+        this.selectedForHistoricalData = this.selectedForHistoricalData.filter(d => d === event.target.value);
       }
 
       const selectedHistoricalData = {
@@ -82,9 +91,13 @@ createApp({
       });
     },
 
-    clearHistoricalDataSelection() {
-      this.selectedForHistoricalData = [];
-      this.initializeHistoricalDataChart();
+    historicalDataMultiselectChanged() {
+      // if multiselect is toggled off while multiple items are selected, remove all but most recent selection
+      if (!this.historicalDataMultiselect && this.selectedForHistoricalData.length > 1) {
+        const recentSelection = this.selectedForHistoricalData[this.selectedForHistoricalData.length - 1];
+        this.selectedForHistoricalData = [recentSelection];
+        this.initializeHistoricalDataChart();
+      }
     }
 
   }
